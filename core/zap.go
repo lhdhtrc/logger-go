@@ -1,8 +1,12 @@
 package core
 
 import (
+	"fmt"
+	pb "github.com/lhdhtrc/logger-go/dep/server/v1"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"os"
 	"time"
 )
@@ -48,7 +52,12 @@ func Setup(options *LoggerOptions) *zap.Logger {
 		cores = append(cores, NewConsoleCore())
 	}
 	if options.Remote {
-		cores = append(cores, NewJsonCore(options))
+		if cli, err := grpc.Dial(options.Addr, grpc.WithTransportCredentials(insecure.NewCredentials())); err == nil {
+			options.sc = pb.NewServerLoggerServiceClient(cli)
+			cores = append(cores, NewJsonCore(options))
+		} else {
+			fmt.Println("the grpc service cannot be connected")
+		}
 	}
 	logger := zap.New(zapcore.NewTee(cores...), zap.AddCaller())
 
