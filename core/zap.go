@@ -3,6 +3,7 @@ package core
 import (
 	"fmt"
 	pb "github.com/lhdhtrc/logger-go/dep/server/v1"
+	"github.com/lhdhtrc/logger-go/model"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
@@ -31,7 +32,7 @@ func NewConsoleCore() zapcore.Core {
 	return core
 }
 
-func NewJsonCore(options *LoggerOptions) zapcore.Core {
+func NewJsonCore(loggerCore *LoggerCoreEntity) zapcore.Core {
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.EncodeTime = func(t time.Time, encoder zapcore.PrimitiveArrayEncoder) {
 		encoder.AppendString(t.Format("2006-01-02 15:04:05"))
@@ -40,21 +41,23 @@ func NewJsonCore(options *LoggerOptions) zapcore.Core {
 	encoderConfig.CallerKey = "path"
 
 	enc := zapcore.NewJSONEncoder(encoderConfig)
-	writeSync := zapcore.AddSync(options)
+	writeSync := zapcore.AddSync(loggerCore)
 	core := zapcore.NewCore(enc, writeSync, zap.NewAtomicLevel())
 
 	return core
 }
 
-func Setup(options *LoggerOptions) *zap.Logger {
+func Setup(config model.ConfigEntity) *zap.Logger {
+	core := &LoggerCoreEntity{ConfigEntity: config}
+
 	var cores []zapcore.Core
-	if options.Console {
+	if core.Console {
 		cores = append(cores, NewConsoleCore())
 	}
-	if options.Remote {
-		if cli, err := grpc.Dial(options.Addr, grpc.WithTransportCredentials(insecure.NewCredentials())); err == nil {
-			options.sc = pb.NewServerLoggerServiceClient(cli)
-			cores = append(cores, NewJsonCore(options))
+	if core.Remote {
+		if cli, err := grpc.Dial(core.Addr, grpc.WithTransportCredentials(insecure.NewCredentials())); err == nil {
+			core.sc = pb.NewServerLoggerServiceClient(cli)
+			cores = append(cores, NewJsonCore(core))
 		} else {
 			fmt.Println("the grpc service cannot be connected")
 		}

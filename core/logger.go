@@ -4,18 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	pb "github.com/lhdhtrc/logger-go/dep/server/v1"
+	"github.com/lhdhtrc/logger-go/model"
 	"time"
 )
 
-type LoggerOptions struct {
-	Addr    string `json:"addr" yaml:"addr" mapstructure:"addr"`
-	AppId   string `json:"app_id" yaml:"app_id" mapstructure:"app_id"`
-	Console bool   `json:"console" yaml:"console" mapstructure:"console"`
-	Remote  bool   `json:"remote" yaml:"remote" mapstructure:"remote"`
-	sc      pb.ServerLoggerServiceClient
+type LoggerCoreEntity struct {
+	model.ConfigEntity
+	sc pb.ServerLoggerServiceClient
 }
 
-func (s *LoggerOptions) Write(b []byte) (n int, err error) {
+func (s *LoggerCoreEntity) Write(b []byte) (n int, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
