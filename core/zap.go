@@ -35,6 +35,7 @@ func NewJsonCore(loggerCore *LoggerCoreEntity) zapcore.Core {
 	}
 	encoderConfig.MessageKey = "message"
 	encoderConfig.CallerKey = "path"
+	encoderConfig.TimeKey = "created_at"
 
 	enc := zapcore.NewJSONEncoder(encoderConfig)
 	writeSync := zapcore.AddSync(loggerCore)
