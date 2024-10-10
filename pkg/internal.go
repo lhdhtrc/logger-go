@@ -37,7 +37,7 @@ func consoleCore() zapcore.Core {
 func jsonCore(loggerCore *CoreEntity) zapcore.Core {
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.EncodeTime = func(t time.Time, encoder zapcore.PrimitiveArrayEncoder) {
-		encoder.AppendString(t.Format("2006-01-02 15:04:05"))
+		encoder.AppendString(t.Format(time.DateTime))
 	}
 	encoderConfig.MessageKey = "message"
 	encoderConfig.CallerKey = "path"
