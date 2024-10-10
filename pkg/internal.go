@@ -8,8 +8,8 @@ import (
 )
 
 func (s *CoreEntity) Write(b []byte) (n int, err error) {
-	if s.remoteHandle != nil {
-		s.remoteHandle(b)
+	if s.handle != nil {
+		s.handle(b)
 	}
 	return len(b), nil
 }

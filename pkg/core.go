@@ -5,10 +5,10 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func New(config *ConfigEntity, remoteHandle func(b []byte)) *zap.Logger {
+func New(config *ConfigEntity, handle func(b []byte)) *zap.Logger {
 	core := &CoreEntity{
 		ConfigEntity: *config,
-		remoteHandle: remoteHandle,
+		handle:       handle,
 	}
 
 	var cores []zapcore.Core

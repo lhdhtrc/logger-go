@@ -6,6 +6,7 @@ type ConfigEntity struct {
 }
 
 type CoreEntity struct {
+	handle func(b []byte)
+
 	ConfigEntity
-	remoteHandle func(b []byte)
 }
