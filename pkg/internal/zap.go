@@ -1,20 +1,14 @@
-package loger
+package internal
 
 import (
+	"github.com/lhdhtrc/logger-go/pkg"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"os"
 	"time"
 )
 
-func (s *CoreEntity) Write(b []byte) (n int, err error) {
-	if s.handle != nil {
-		s.handle(b)
-	}
-	return len(b), nil
-}
-
-func consoleCore() zapcore.Core {
+func NewConsoleCore() zapcore.Core {
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.MessageKey = "message"
 	encoderConfig.CallerKey = "path"
@@ -34,7 +28,7 @@ func consoleCore() zapcore.Core {
 	return core
 }
 
-func jsonCore(loggerCore *CoreEntity) zapcore.Core {
+func NewJsonCore(cfg *logger.Config) zapcore.Core {
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.EncodeTime = func(t time.Time, encoder zapcore.PrimitiveArrayEncoder) {
 		encoder.AppendString(t.Format(time.DateTime))
@@ -44,7 +38,7 @@ func jsonCore(loggerCore *CoreEntity) zapcore.Core {
 	encoderConfig.TimeKey = "created_at"
 
 	enc := zapcore.NewJSONEncoder(encoderConfig)
-	writeSync := zapcore.AddSync(loggerCore)
+	writeSync := zapcore.AddSync(cfg)
 	core := zapcore.NewCore(enc, writeSync, zap.NewAtomicLevel())
 
 	return core
