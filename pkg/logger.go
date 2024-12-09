@@ -20,17 +20,15 @@ func (c *Config) Write(b []byte) (n int, err error) {
 	return len(b), nil
 }
 
-func (c *Config) WithLoggerHandle(handle func(b []byte)) {
-	c.handle = handle
-}
+func New(config *Config, handle func(b []byte)) *zap.Logger {
+	config.handle = handle
 
-func New(cfg *Config) *zap.Logger {
 	var cores []zapcore.Core
-	if cfg.Console {
+	if config.Console {
 		cores = append(cores, internal.NewConsoleCore())
 	}
-	if cfg.Remote {
-		cores = append(cores, internal.NewJsonCore(cfg))
+	if config.Remote {
+		cores = append(cores, internal.NewJsonCore(config))
 	}
 	logger := zap.New(zapcore.NewTee(cores...), zap.AddCaller())
 
