@@ -30,7 +30,6 @@ func New(config *Config, handle func(b []byte)) *zap.Logger {
 	if config.Remote {
 		cores = append(cores, internal.NewJsonCore(config))
 	}
-	logger := zap.New(zapcore.NewTee(cores...), zap.AddCaller())
 
-	return logger
+	return zap.New(zapcore.NewTee(cores...), zap.AddCaller())
 }
