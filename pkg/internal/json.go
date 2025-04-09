@@ -18,7 +18,6 @@ func NewJsonCore(config core.LoggerConfig) zapcore.Core {
 
 	enc := zapcore.NewJSONEncoder(encoderConfig)
 	writeSync := zapcore.AddSync(config)
-	core := zapcore.NewCore(enc, writeSync, zap.NewAtomicLevel())
 
-	return core
+	return zapcore.NewCore(enc, writeSync, zap.NewAtomicLevel())
 }
