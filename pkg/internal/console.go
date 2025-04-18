@@ -9,6 +9,7 @@ import (
 
 func NewConsoleCore() zapcore.Core {
 	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.ConsoleSeparator = "  "
 	encoderConfig.MessageKey = "message"
 	encoderConfig.CallerKey = "path"
 	encoderConfig.EncodeTime = func(t time.Time, encoder zapcore.PrimitiveArrayEncoder) {
