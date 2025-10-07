@@ -1,6 +1,6 @@
 module github.com/lhdhtrc/logger-go
 
-go 1.23.1
+go 1.25.1
 
 require go.uber.org/zap v1.27.0
 
