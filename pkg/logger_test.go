@@ -8,13 +8,13 @@ import (
 func TestNew(t *testing.T) {
 	tests := []struct {
 		name        string
-		config      *Config
+		config      *Conf
 		wantConsole bool
 		wantRemote  bool
 	}{
 		{
 			name: "console only",
-			config: &Config{
+			config: &Conf{
 				Console: true,
 				Remote:  false,
 			},
@@ -23,7 +23,7 @@ func TestNew(t *testing.T) {
 		},
 		{
 			name: "remote only",
-			config: &Config{
+			config: &Conf{
 				Console: false,
 				Remote:  true,
 			},
@@ -32,7 +32,7 @@ func TestNew(t *testing.T) {
 		},
 		{
 			name: "both console and remote",
-			config: &Config{
+			config: &Conf{
 				Console: true,
 				Remote:  true,
 			},
@@ -41,7 +41,7 @@ func TestNew(t *testing.T) {
 		},
 		{
 			name: "neither console nor remote",
-			config: &Config{
+			config: &Conf{
 				Console: false,
 				Remote:  false,
 			},

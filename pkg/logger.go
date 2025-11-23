@@ -23,14 +23,14 @@ type log struct {
 	TraceId   string `json:"trace_id"`
 }
 
-type Config struct {
+type Conf struct {
 	Console bool `json:"console" bson:"console" yaml:"console" mapstructure:"console"`
 	Remote  bool `json:"remote" bson:"remote" yaml:"remote" mapstructure:"remote"`
 
 	handle func(b []byte)
 }
 
-func (c *Config) Write(b []byte) (n int, err error) {
+func (c *Conf) Write(b []byte) (n int, err error) {
 	if c.handle != nil {
 
 		var data log
@@ -51,15 +51,15 @@ func (c *Config) Write(b []byte) (n int, err error) {
 	return len(b), nil
 }
 
-func New(config *Config, handle func(b []byte)) *zap.Logger {
-	config.handle = handle
+func New(conf *Conf, handle func(b []byte)) *zap.Logger {
+	conf.handle = handle
 
 	var cores []zapcore.Core
-	if config.Console {
+	if conf.Console {
 		cores = append(cores, internal.NewConsoleCore())
 	}
-	if config.Remote {
-		cores = append(cores, internal.NewJsonCore(config))
+	if conf.Remote {
+		cores = append(cores, internal.NewJsonCore(conf))
 	}
 
 	return zap.New(zapcore.NewTee(cores...), zap.AddCaller())
